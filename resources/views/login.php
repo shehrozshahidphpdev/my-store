@@ -13,9 +13,16 @@ unset($_SESSION['errors']);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
+  <style>
+
+  </style>
 </head>
 
 <body>
+  <?php if (isset($_SESSION['success'])) {
+    include_once COMPONENTS_PATH . 'message.php';
+    unset($_SESSION['success']);
+  } ?>
   <main class="register">
     <div class="register__container">
       <h1 class="register__title">Login</h1>
@@ -31,8 +38,10 @@ unset($_SESSION['errors']);
           <input class="register__input" type="password" name="password" placeholder=" Enter password">
           <p class="error"><?= $errors['password'] ?? '' ?></p>
         </div>
-        <input type="hidden" name="register" value="register">
-        <p class="register__bottom">Already Registered? <span class="login"><a href="/login" class="login">Login</a></span></p>
+        <button type="submit" class="register__button">Login</button>
+
+
+        <p class="register__bottom">Not have an account? <span class="login"><a href="/register" class="login">register</a></span></p>
       </form>
     </div>
   </main>

@@ -74,16 +74,58 @@ class User
 
   public function login($request)
   {
-    $name = $request['name'];
+    $email = $request['email'];
     $password = $request['password'];
-    $validated = $this->validateLoginRequest($name, $password);
-  }
+    $validated = $this->validateLoginRequest($email, $password);
+    if (!$validated) {
+      header('Location: /login');
+      exit();
+    }
 
-  public function validateLoginRequest(string $name, string $password)
-  {
     $sql = "SELECT * FROM users";
     $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($users as $user) {
+      if ($email == $user['email'] && password_verify($password, $user['password'])) {
+        $_SESSION['user'] = $user;
+        header('Location: /');
+        exit();
+      }
+    }
+    $_SESSION['errors']['email'] = "The credentials does not match our records";
+    header('Location: /login');
+    exit();
+  }
+
+  public function validateLoginRequest(string $email, string $password): bool
+  {
+    $_SESSION['errors'] = [];
+    if (empty($email)) {
+      $_SESSION['errors']['email'] = "the email fields id required";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $_SESSION['errors']['email'] = "the email is invalid";
+    }
+
+    if (empty($password)) {
+      $_SESSION['errors']['password'] = "the password field  is required";
+    }
+
+    if (empty($_SESSION['errors'])) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public function logout()
+  {
+    if (isset($_SESSION['user'])) {
+      session_unset();
+      session_destroy();
+      header('Location: /login');
+    }
   }
 }
 
-$auth = new User($conn);
+$user = new User($conn);

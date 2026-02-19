@@ -8,3 +8,5 @@ define('BASE_PATH', __DIR__);
 define('VIEWS_PATH', BASE_PATH . '/resources/views/');
 define('BASE_URL', 'http://localhost:8000/');
 define('ASSETS_URL', BASE_URL . 'assets/');
+define('RESOURCES_PATH', BASE_PATH . '/resources/');
+define('COMPONENTS_PATH', BASE_PATH . '/resources/views/components/');
