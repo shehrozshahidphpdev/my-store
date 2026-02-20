@@ -17,20 +17,39 @@
 
       <main class="main">
         <div class="card">
-          <div class="card__header">
-            <h4>Products</h4>
+          <div class="card-header">
+            <h4 class="title">Products</h4>
             <a href="/products/create" class="btn">Create</a>
           </div>
-          <div class="table">
+          <table class="table">
             <thead>
               <tr>
-                <td>#</td>
-                <td>#</td>
-                <td>#</td>
-                <td>#</td>
+                <th>#</th>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Image</th>
+                <th>Created At</th>
+                <th>Updated At</th>
               </tr>
             </thead>
-          </div>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>iphone 17 pro max</td>
+                <td>iphone-17-pro-max</td>
+                <td>Lorem ipsum dolor sit amet</td>
+                <td>1000</td>
+                <td>20</td>
+                <td>image.jpg</td>
+                <td>2026-02-19</td>
+                <td>2026-02-19</td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
       </main>
 

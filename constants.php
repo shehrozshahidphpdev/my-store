@@ -10,3 +10,4 @@ define('BASE_URL', 'http://localhost:8000/');
 define('ASSETS_URL', BASE_URL . 'assets/');
 define('RESOURCES_PATH', BASE_PATH . '/resources/');
 define('COMPONENTS_PATH', BASE_PATH . '/resources/views/components/');
+define("UPLOADS_PATH", BASE_URL . '/public/uploads/');

@@ -103,6 +103,10 @@ li {
   transition: all;
 }
 
+.error {
+  color: red;
+}
+
 .layout {
   display: flex;
   height: 100vh;
@@ -137,13 +141,14 @@ ul {
 
 .body {
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 .header {
   padding: 20px;
 }
 
-.row {
+.header-row {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -165,4 +170,144 @@ ul {
 .main {
   height: 100%;
   width: 100%;
+}
+
+.card {
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 30px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.btn {
+  padding: 10px 20px;
+  color: white;
+  background: rgba(0, 0, 255, 0.657);
+  border-radius: 8px;
+  box-shadow: 5px 5px 5px black;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #111827;
+  color: #E5E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.table thead {
+  background: #1F2937;
+  font-weight: 600;
+}
+
+.table tbody tr {
+  border-top: 1px solid #374151;
+}
+
+.table tbody tr:hover {
+  background: #374151;
+}
+
+.card {
+  background: #111827;
+  padding: 2rem;
+  border-radius: 10px;
+  color: #e5e7eb;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.card-header .title {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.card-header .back-btn {
+  text-decoration: none;
+  padding: 8px 14px;
+  background: #374151;
+  color: white;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+.card-header .back-btn:hover {
+  background: #4b5563;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+form .row {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+}
+form .row textarea {
+  width: 100%;
+}
+form .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+form label {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+form input,
+form textarea {
+  padding: 10px 12px;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  color: #f9fafb;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.2s ease;
+}
+form input:focus,
+form textarea:focus {
+  border-color: #3b82f6;
+}
+form .text-area {
+  display: flex;
+  flex-direction: column;
+}
+form button {
+  align-self: flex-start;
+  padding: 10px 18px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+form button:hover {
+  background: #2563eb;
 }/*# sourceMappingURL=app.css.map */

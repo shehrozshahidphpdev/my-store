@@ -66,6 +66,30 @@ switch ($uri) {
     }
     break;
 
+  case '/products':
+    if (isAuthenticated()) {
+      view('list');
+    } else {
+      header('Location: /');
+    }
+    break;
+
+  case '/products/create':
+    if (isAuthenticated()) {
+      view('create');
+    } else {
+      header('Location: /login');
+    }
+    break;
+
+  case '/products/store':
+    if (isAuthenticated()) {
+      $product->store($_POST, $_FILES);
+    } else {
+      header('Location: /login');
+    }
+    break;
+
   default:
     die("Sorry the page you are looking is not found");
 }

@@ -33,13 +33,14 @@ ul {
 
 .body {
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 .header {
   padding:  20px;
 }
 
-.row {
+.header-row {
   display: flex;
   justify-content: flex-end;
   align-items: center;
