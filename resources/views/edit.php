@@ -27,12 +27,12 @@ unset($_SESSION['errors']);
             <a href="/products" class="back-btn">Back</a>
           </div>
 
-          <form action="/products/update" method="post" enctype="multipart/form-data">
+          <form action="/products/update?id=<?= $data['id'] ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?= $data['id'] ?>">
             <div class="row">
               <div class="form-group">
                 <label for="">Name</label>
-                <input type="text" name="name" value="<?= $old['name'] ??  $data['name'] ?>" placeholder="Enter Product Name">
+                <input type="text" name="name" placeholder="Enter Product Name" value="<?= $old['name'] ?? $data['name'] ?>">
                 <p class="error"><?= $errors['name'] ?? '' ?></p>
               </div>
               <div class="form-group">
@@ -68,6 +68,14 @@ unset($_SESSION['errors']);
                   <img src="<?= BASE_URL . 'uploads/' . $data['image'] ?>" alt="">
                 </div>
                 <p class="error"><?= $errors['image'] ?? '' ?></p>
+              </div>
+              <div class="form-group">
+                <label for="">Status (optional) default is active</label>
+                <select name="status" id="">
+                  <option value="" selected>-- Please Select Sttaus</option>
+                  <option value="1" <?php echo $data['status'] == 1 ? 'selected' : ''  ?>>Active</option>
+                  <option value="0" <?php echo $data['status'] == 0 ? 'selected' : ''  ?>>Not Active</option>
+                </select>
               </div>
             </div>
             <button type="submit">Submit</button>

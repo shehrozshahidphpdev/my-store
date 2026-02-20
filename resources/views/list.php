@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -23,8 +24,27 @@
       <main class="main">
         <div class="card">
           <div class="card-header">
-            <h4 class="title">Products</h4>
-            <a href="/products/create" class="btn">Create</a>
+            <div class="left">
+              <h4 class="title">Products</h4>
+              <form action="/products" method="get">
+                <select name="sort" id="sort" onchange="this.form.submit()">
+                  <option disabled>sort</option>
+                  <option value="date">Sort By Date</option>
+                  <option value="price-descending">Price High To low</option>
+                  <option value="price-ascending">Price Low To High</option>
+                </select>
+              </form>
+            </div>
+            <div class="right">
+              <form action="/products" method="get" class="search-form">
+                <input type="search" name="search" class="search" placeholder="Search Something Here">
+                <button type="submit" class="btn">Submit</button>
+              </form>
+
+              <a href="/products" class="logout-btn">Clear</a>
+
+              <a href="/products/create" class="btn">Create</a>
+            </div>
           </div>
           <table class="table">
             <thead>
@@ -35,6 +55,7 @@
                 <th>Description</th>
                 <th>Price</th>
                 <th>Stock</th>
+                <th>Status</th>
                 <th>Image</th>
                 <th>Actions</th>
               </tr>
@@ -49,13 +70,14 @@
                   <td><?= $product['description'] ?></td>
                   <td><?= $product['price'] ?></td>
                   <td><?= $product['stock'] ?></td>
+                  <td><?= $product['status'] ?></td>
                   <td><img src="<?= UPLOADS_PATH . $product['image'] ?>" alt="product image" style="height: 50px; width: 50px;"></td>
                   <td>
                     <?php
                     $id = $product['id'];
                     ?>
-                    <a href="/product/edit?id=<?= $id ?>">edit</a>
-                    <a href="/product/delete?id=<?= $id ?>" style="color: red;">delete</a>
+                    <a class="icon" href="/product/edit?id=<?= $id ?>" style="color: blue;"><i class="fas fa-edit"></i></a>
+                    <a class="icon" href="/product/delete?id=<?= $id ?>" style="color: red;"><i class="fa-solid fa-trash"></i></a>
                   </td>
                 </tr>
               <?php  }

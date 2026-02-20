@@ -70,7 +70,7 @@ switch ($uri) {
     if (User::check()) {
       $product->index();
     } else {
-      header('Location: /');
+      header('Location: /login');
     }
     break;
 
@@ -91,17 +91,27 @@ switch ($uri) {
     break;
 
   case '/product/delete':
-    $product->destroy($_GET['id']);
+    if (User::check()) {
+      $product->destroy($_GET['id']);
+    }
     break;
 
   case '/product/edit':
-    $product->edit($_GET['id']);
-    break;
+    if (User::check()) {
+      $product->edit($_GET['id']);
+      break;
+    } else {
+      header('Location: /login');
+    }
 
 
-  case '/product/update':
-    $product->update();
-    break;
+  case '/products/update':
+    if (User::check()) {
+      $product->update($_POST, $_FILES, $_GET['id']);
+      break;
+    } else {
+      header('Location: /login');
+    }
 
   default:
     die("Sorry the page you are looking is not found");

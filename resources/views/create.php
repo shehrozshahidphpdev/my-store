@@ -65,6 +65,15 @@ unset($_SESSION['errors']);
                 <input type="file" name="image">
                 <p class="error"><?= $errors['image'] ?? '' ?></p>
               </div>
+
+              <div class="form-group">
+                <label for="">Status (optional) default is active</label>
+                <select name="status" id="">
+                  <option value="" selected>-- Please Select Sttaus</option>
+                  <option value="1">Active</option>
+                  <option value="0">Not Active</option>
+                </select>
+              </div>
             </div>
             <button type="submit">Submit</button>
           </form>

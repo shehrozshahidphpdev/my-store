@@ -108,9 +108,10 @@ li {
 }
 
 img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  overflow: hidden;
 }
 
 .layout {
@@ -228,8 +229,43 @@ ul {
   border-top: 1px solid #374151;
 }
 
-.table tbody tr:hover {
-  background: #374151;
+.search {
+  padding: 10px 12px;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  color: #f9fafb;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.2s ease;
+  width: 250px;
+}
+.search:focus {
+  border-color: #3b82f6;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-form {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.left {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.icon {
+  text-decoration: none;
+  font-size: 1.7rem;
 }
 
 .card {
@@ -285,7 +321,8 @@ form label {
   color: #9ca3af;
 }
 form input,
-form textarea {
+form textarea,
+form select {
   padding: 10px 12px;
   background: #1f2937;
   border: 1px solid #374151;
@@ -296,7 +333,8 @@ form textarea {
   transition: border 0.2s ease;
 }
 form input:focus,
-form textarea:focus {
+form textarea:focus,
+form select:focus {
   border-color: #3b82f6;
 }
 form .text-area {

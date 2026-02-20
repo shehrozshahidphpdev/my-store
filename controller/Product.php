@@ -10,6 +10,18 @@ class Product
 
   public function index()
   {
+    if (isset($_GET['search'])) {
+      $query = $_GET['search'];
+
+
+      $searchSql = "SELECT * FROM products WHERE name LIKE :name OR  price LIKE :price OR  stock LIKE :stock OR description like :description";
+      $stmt = $this->conn->prepare($searchSql);
+      $stmt->execute([':name' => "%$query%", ':price' => "%$query%", ':stock' => "%$query%", ':description' => "%$query%"]);
+      $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      return view('list', ['products' => $products]);
+    }
+    // die('here');
+
     $sql = "SELECT * FROM products";
     $stmt =  $this->conn->prepare($sql);
     $stmt->execute();
@@ -20,13 +32,14 @@ class Product
   public function store($request, $files)
   {
     $name = trim($request['name']);
+    $status = $request['status'];
     $slug = trim($request['slug']);
     $description = trim($request['description']);
     $price = trim($request['price']);
     $stock = trim($request['stock']);
     $image = $files['image']['name'];
 
-    $validated = $this->validateProductStoreRequest($name, $slug, $description, $price, $stock, $image);
+    $validated = $this->validateProductStoreRequest($name,  $description, $price, $stock, $image);
     if (!$validated) {
       $_SESSION['old'] = $request;
       header('Location: /products/create');
@@ -39,7 +52,7 @@ class Product
       move_uploaded_file($files['image']['tmp_name'], $path);
     }
 
-    $sql = 'INSERT INTO products (name, slug, description, price, stock, image) VALUES(:name, :slug, :description, :price, :stock, :image)';
+    $sql = 'INSERT INTO products (name, slug, description, price, stock, status,  image) VALUES(:name, :slug, :description, :price, :stock, :status,  :image)';
     $stmt = $this->conn->prepare($sql);
     $stmt->execute([
       ':name' => $name,
@@ -47,20 +60,18 @@ class Product
       ':description' => strtolower($description),
       ':price' => $price,
       ':stock' => $stock,
+      ':status' => $status,
       ':image' => $files['image']['name']
     ]);
     $_SESSION['success'] = "Product Created Successfully";
     header('Location: /products');
     exit();
   }
-  function validateProductStoreRequest(string $name, string $slug, string $description, string $price, string $stock, $image)
+  function validateProductStoreRequest(string $name,  string $description, string $price, string $stock, $image)
   {
     $_SESSION['errors'] = [];
     if (empty($name)) {
       $_SESSION['errors']['name'] = "The name field is required";
-    }
-    if (empty($slug)) {
-      $_SESSION['errors']['slug'] = "The slug field is required";
     }
     if (empty($description)) {
       $_SESSION['errors']['description'] = "The description field is required";
@@ -71,8 +82,10 @@ class Product
     if (empty($stock)) {
       $_SESSION['errors']['stock'] = "The stock field is required";
     }
-    if (empty($image)) {
-      $_SESSION['errors']['image'] = "The image field is required";
+    if (!isset($_GET['id'])) {
+      if (empty($image)) {
+        $_SESSION['errors']['image'] = "The image field is required";
+      }
     }
 
     if (empty($_SESSION['errors'])) {
@@ -82,7 +95,7 @@ class Product
     return false;
   }
 
-  public function edit(int $id)
+  public function edit($id)
   {
     $sql = "SELECT *  FROM products WHERE id = :id";
     $stmt = $this->conn->prepare($sql);
@@ -93,41 +106,57 @@ class Product
     return view('edit', ['data' => $data]);
   }
 
-  public function update($request, $files)
+  public function update($request, $files,  $id)
   {
+    // dd($files);
     $name = trim($request['name']);
     $slug = trim($request['slug']);
     $description = trim($request['description']);
     $price = trim($request['price']);
     $stock = trim($request['stock']);
+    $status = $request['status'];
     $image = $files['image']['name'];
+    $userSlug = str_replace(" ", '-', $name);
 
-    $validated = $this->validateProductStoreRequest($name, $slug, $description, $price, $stock, $image);
+    $validated = $this->validateProductStoreRequest($name,  $description, $price, $stock, $image);
+
     if (!$validated) {
       $_SESSION['old'] = $request;
-      header('Location: /products/create');
-      exit();
+      return header('Location: /product/edit?id=' . $id);
     }
-    if (isset($files['image'])) {
+
+    if (($files['image']['tmp_name'])) {
+      // die('set');
       $destination = BASE_PATH . '/public/uploads/';
       $path  = $destination . basename($files['image']['name']);
       $path = str_replace(" ", "", $path);
       move_uploaded_file($files['image']['tmp_name'], $path);
     }
+    // getting provious img if not upload again 
+    $stmt = $this->conn->prepare("SELECT image from products where id = :id");
+    $stmt->execute([':id' => $id]);
+    $previousImage = $stmt->fetch(PDO::FETCH_ASSOC);
+    // dd($previousImage);
 
-    $sql = 'INSERT INTO products (name, slug, description, price, stock, image) VALUES(:name, :slug, :description, :price, :stock, :image)';
+
+    $sql = 'UPDATE products SET name = :name, slug = :slug, description = :description, price = :price, stock = :stock, status = :status,  image = :image WHERE id = :id';
     $stmt = $this->conn->prepare($sql);
-    $stmt->execute([
+    $res = $stmt->execute([
+      ':id' => $id,
       ':name' => $name,
-      ':slug' => $slug ?? str_replace(" ", '-', $name),
+      ':slug' => !isset($slug) ? $slug : $userSlug,
       ':description' => strtolower($description),
       ':price' => $price,
       ':stock' => $stock,
-      ':image' => $files['image']['name']
+      ':status' => $status,
+      ':image' => !empty($files['image']['name']) ? $files['image']['name'] : $previousImage['image']
     ]);
-    $_SESSION['success'] = "Product Created Successfully";
-    header('Location: /products');
-    exit();
+    if ($res) {
+      session("success", "Product Updated Successfully");
+      return header('Location: /products');
+    } else {
+      echo "Something went wrong";
+    }
   }
 
   public function destroy($id)
