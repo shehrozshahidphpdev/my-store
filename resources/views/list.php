@@ -26,17 +26,20 @@
           <div class="card-header">
             <div class="left">
               <h4 class="title">Products</h4>
-              <form action="/products" method="get">
+              <form action="/products/sort" method="get">
                 <select name="sort" id="sort" onchange="this.form.submit()">
-                  <option disabled>sort</option>
-                  <option value="date">Sort By Date</option>
-                  <option value="price-descending">Price High To low</option>
-                  <option value="price-ascending">Price Low To High</option>
+                  <option disabled selected>sort</option>
+                  <option value="default">Default</option>
+                  <option value="created_by_descending">Sort By Date</option>
+                  <option value="price_descending">Price High To low</option>
+                  <option value="price_ascending">Price Low To High</option>
+                  <option value="status_active">Status Active</option>
+                  <option value="status_inactive">Status InActive</option>
                 </select>
               </form>
             </div>
             <div class="right">
-              <form action="/products" method="get" class="search-form">
+              <form action="/products/search" method="get" class="search-form">
                 <input type="search" name="search" class="search" placeholder="Search Something Here">
                 <button type="submit" class="btn">Submit</button>
               </form>

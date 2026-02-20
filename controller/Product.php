@@ -10,10 +10,19 @@ class Product
 
   public function index()
   {
+
+
+    $sql = "SELECT * FROM products";
+    $stmt =  $this->conn->prepare($sql);
+    $stmt->execute();
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return view('list', ['products' => $products]);
+  }
+
+  public function search()
+  {
     if (isset($_GET['search'])) {
       $query = $_GET['search'];
-
-
       $searchSql = "SELECT * FROM products WHERE name LIKE :name OR  price LIKE :price OR  stock LIKE :stock OR description like :description";
       $stmt = $this->conn->prepare($searchSql);
       $stmt->execute([':name' => "%$query%", ':price' => "%$query%", ':stock' => "%$query%", ':description' => "%$query%"]);
@@ -21,12 +30,46 @@ class Product
       return view('list', ['products' => $products]);
     }
     // die('here');
+  }
 
-    $sql = "SELECT * FROM products";
-    $stmt =  $this->conn->prepare($sql);
-    $stmt->execute();
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    return view('list', ['products' => $products]);
+  public function sort()
+  {
+    if (isset($_GET['sort'])) {
+      $sortType = $_GET['sort'];
+      if ($sortType == 'default') {
+        return header('Location: /products');
+      } else if ($sortType == 'created_by_descending') {
+        $sortSql = "SELECT * FROM products ORDER By created_at DESC";
+        $stmt = $this->conn->prepare($sortSql);
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return view('list', ['products' => $products]);
+      } elseif ($sortType == 'price_descending') {
+        $sortSql = "SELECT * FROM products ORDER By price DESC";
+        $stmt = $this->conn->prepare($sortSql);
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return view('list', ['products' => $products]);
+      } elseif ($sortType == 'price_ascending') {
+        $sortSql = "SELECT * FROM products ORDER By price ASC";
+        $stmt = $this->conn->prepare($sortSql);
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return view('list', ['products' => $products]);
+      } elseif ($sortType == 'status_active') {
+        $sortSql = "SELECT * FROM products WHERE status = 1";
+        $stmt = $this->conn->prepare($sortSql);
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return view('list', ['products' => $products]);
+      } elseif ($sortType == 'status_inactive') {
+        $sortSql = "SELECT * FROM products WHERE status = 0";
+        $stmt = $this->conn->prepare($sortSql);
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return view('list', ['products' => $products]);
+      }
+    }
   }
 
   public function store($request, $files)

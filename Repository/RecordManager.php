@@ -9,3 +9,5 @@ class RecordManager
 
   public function __construct($conn, $table) {}
 }
+
+$db = new RecordManager($conn, 'products');

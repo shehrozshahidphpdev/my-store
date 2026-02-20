@@ -113,6 +113,22 @@ switch ($uri) {
       header('Location: /login');
     }
 
+  case '/products/search':
+    if (User::check()) {
+      $product->search();
+      break;
+    } else {
+      header('Location: /login');
+    }
+
+  case '/products/sort':
+    if (User::check()) {
+      $product->sort();
+      break;
+    } else {
+      header('Location: /login');
+    }
+
   default:
     die("Sorry the page you are looking is not found");
 }
