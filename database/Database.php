@@ -3,10 +3,10 @@
 
 class Database
 {
-  private $db_host;
+  public $db_host;
   private $db_username;
   private $db_password;
-  private $db_name;
+  public $db_name;
 
 
   public function __construct(string $db_host, string $db_username, string $db_password, string $db_name)

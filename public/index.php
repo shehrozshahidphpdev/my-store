@@ -9,11 +9,15 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 require_once '../constants.php';
 require_once BASE_PATH . '/database/Database.php';
-require_once BASE_PATH . '/Helpers/helpers.php';
-require_once BASE_PATH . '/database/Database.php';
 $conn = $conn->getConnection();
+require_once BASE_PATH . '/Helpers/helpers.php';
+//repos 
+require_once BASE_PATH . '/Repository/UserRepository.php';
+require_once BASE_PATH . '/Repository/RecordManagerRepository.php';
 require_once BASE_PATH . '/controller/Product.php';
 require_once BASE_PATH . '/controller/User.php';
+
+
 
 $uri = $_SERVER['REQUEST_URI'];
 $uri = parse_url($uri, PHP_URL_PATH);

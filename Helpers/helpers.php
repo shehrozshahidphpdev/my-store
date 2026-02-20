@@ -33,3 +33,12 @@ function session($key, $value)
 {
   $_SESSION[$key] = $value;
 }
+
+
+function sessionMessage()
+{
+  if (isset($_SESSION['success'])) {
+    include_once COMPONENTS_PATH . 'message.php';
+    unset($_SESSION['success']);
+  }
+}

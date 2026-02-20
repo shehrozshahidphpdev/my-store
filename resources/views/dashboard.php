@@ -9,6 +9,9 @@
 </head>
 
 <body>
+  <?php
+  sessionMessage()
+  ?>
   <div class="layout">
     <?php include_once COMPONENTS_PATH . 'admin/sidebar.php'; ?>
 

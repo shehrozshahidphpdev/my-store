@@ -3,19 +3,16 @@
 class Product
 {
   public $conn;
-  public function __construct($conn)
+  public $product;
+  public function __construct($conn, RecordManagerRepository $product)
   {
     $this->conn = $conn;
+    $this->product = $product;
   }
 
   public function index()
   {
-
-
-    $sql = "SELECT * FROM products";
-    $stmt =  $this->conn->prepare($sql);
-    $stmt->execute();
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $products = $this->product->getAll();
     return view('list', ['products' => $products]);
   }
 
@@ -23,13 +20,9 @@ class Product
   {
     if (isset($_GET['search'])) {
       $query = $_GET['search'];
-      $searchSql = "SELECT * FROM products WHERE name LIKE :name OR  price LIKE :price OR  stock LIKE :stock OR description like :description";
-      $stmt = $this->conn->prepare($searchSql);
-      $stmt->execute([':name' => "%$query%", ':price' => "%$query%", ':stock' => "%$query%", ':description' => "%$query%"]);
-      $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $products = $this->product->search($query);
       return view('list', ['products' => $products]);
     }
-    // die('here');
   }
 
   public function sort()
@@ -39,34 +32,19 @@ class Product
       if ($sortType == 'default') {
         return header('Location: /products');
       } else if ($sortType == 'created_by_descending') {
-        $sortSql = "SELECT * FROM products ORDER By created_at DESC";
-        $stmt = $this->conn->prepare($sortSql);
-        $stmt->execute();
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $products = $this->product->sortCreatedBy();
         return view('list', ['products' => $products]);
       } elseif ($sortType == 'price_descending') {
-        $sortSql = "SELECT * FROM products ORDER By price DESC";
-        $stmt = $this->conn->prepare($sortSql);
-        $stmt->execute();
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $products = $this->product->sortHighPrice();
         return view('list', ['products' => $products]);
       } elseif ($sortType == 'price_ascending') {
-        $sortSql = "SELECT * FROM products ORDER By price ASC";
-        $stmt = $this->conn->prepare($sortSql);
-        $stmt->execute();
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $products = $this->product->sortPriceLow();
         return view('list', ['products' => $products]);
       } elseif ($sortType == 'status_active') {
-        $sortSql = "SELECT * FROM products WHERE status = 1";
-        $stmt = $this->conn->prepare($sortSql);
-        $stmt->execute();
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $products = $this->product->sortActive();
         return view('list', ['products' => $products]);
       } elseif ($sortType == 'status_inactive') {
-        $sortSql = "SELECT * FROM products WHERE status = 0";
-        $stmt = $this->conn->prepare($sortSql);
-        $stmt->execute();
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $products = $this->product->sortInActive();
         return view('list', ['products' => $products]);
       }
     }
@@ -94,18 +72,18 @@ class Product
       $path = str_replace(" ", "", $path);
       move_uploaded_file($files['image']['tmp_name'], $path);
     }
+    $data = [];
+    $data = [
+      'name' => $name,
+      'slug' => $slug,
+      'description' => $description,
+      'price' => $price,
+      'stock' => $stock,
+      'status' => $status,
+      'image' => $files['image']['name']
+    ];
 
-    $sql = 'INSERT INTO products (name, slug, description, price, stock, status,  image) VALUES(:name, :slug, :description, :price, :stock, :status,  :image)';
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute([
-      ':name' => $name,
-      ':slug' => $slug ?? str_replace(" ", '-', $name),
-      ':description' => strtolower($description),
-      ':price' => $price,
-      ':stock' => $stock,
-      ':status' => $status,
-      ':image' => $files['image']['name']
-    ]);
+    $result = $this->product->insert($data);
     $_SESSION['success'] = "Product Created Successfully";
     header('Location: /products');
     exit();
@@ -153,13 +131,14 @@ class Product
   {
     // dd($files);
     $name = trim($request['name']);
-    $slug = trim($request['slug']);
+    $slug = str_replace(" ", "-", $name);
     $description = trim($request['description']);
     $price = trim($request['price']);
     $stock = trim($request['stock']);
     $status = $request['status'];
     $image = $files['image']['name'];
     $userSlug = str_replace(" ", '-', $name);
+
 
     $validated = $this->validateProductStoreRequest($name,  $description, $price, $stock, $image);
 
@@ -176,25 +155,27 @@ class Product
       move_uploaded_file($files['image']['tmp_name'], $path);
     }
     // getting provious img if not upload again 
-    $stmt = $this->conn->prepare("SELECT image from products where id = :id");
-    $stmt->execute([':id' => $id]);
-    $previousImage = $stmt->fetch(PDO::FETCH_ASSOC);
+    $previousImage = $this->product->getImage($id);
     // dd($previousImage);
 
+    $data = [];
+    $data = [
+      'id' => $id,
+      'name' => $name,
+      'slug' => $slug,
+      'description' => $description,
+      'price' => $price,
+      'stock' => $stock,
+      'status' => $status,
+      'image' => $files['image']['name'],
+      'previousImage' => $previousImage['image'],
+      'userSlug' => $userSlug
+    ];
 
-    $sql = 'UPDATE products SET name = :name, slug = :slug, description = :description, price = :price, stock = :stock, status = :status,  image = :image WHERE id = :id';
-    $stmt = $this->conn->prepare($sql);
-    $res = $stmt->execute([
-      ':id' => $id,
-      ':name' => $name,
-      ':slug' => !isset($slug) ? $slug : $userSlug,
-      ':description' => strtolower($description),
-      ':price' => $price,
-      ':stock' => $stock,
-      ':status' => $status,
-      ':image' => !empty($files['image']['name']) ? $files['image']['name'] : $previousImage['image']
-    ]);
-    if ($res) {
+
+    $response = $this->product->update($data);
+
+    if ($response) {
       session("success", "Product Updated Successfully");
       return header('Location: /products');
     } else {
@@ -204,15 +185,9 @@ class Product
 
   public function destroy($id)
   {
-    $sql = "DELETE FROM products WHERE id = :id";
-    $stmt = $this->conn->prepare($sql);
-    $result = $stmt->execute([
-      ':id' => $id
-    ]);
-    if ($result) {
-      session("success", "Product Deleted Successfully");
-      return header('Location: /products');
-    }
+    $this->product->delete($id);
+    session("success", "Product Deleted Successfully");
+    return header('Location: /products');
   }
 }
-$product = new Product($conn);
+$product = new Product($conn, $recordManagerRepository);

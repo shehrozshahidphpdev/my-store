@@ -10,11 +10,7 @@
 </head>
 
 <body>
-  <?php if (isset($_SESSION['success'])) {
-    include_once COMPONENTS_PATH . 'message.php';
-    unset($_SESSION['success']);
-  } ?>
-
+  <?php sessionMessage() ?>
   <div class="layout">
     <?php include_once COMPONENTS_PATH . 'admin/sidebar.php'; ?>
 
@@ -64,26 +60,31 @@
               </tr>
             </thead>
             <tbody>
+
               <?php
-              foreach ($products as $product) { ?>
-                <tr>
-                  <td><?= $product['id'] ?></td>
-                  <td><?= $product['name'] ?></td>
-                  <td><?= $product['slug'] ?></td>
-                  <td><?= $product['description'] ?></td>
-                  <td><?= $product['price'] ?></td>
-                  <td><?= $product['stock'] ?></td>
-                  <td><?= $product['status'] ?></td>
-                  <td><img src="<?= UPLOADS_PATH . $product['image'] ?>" alt="product image" style="height: 50px; width: 50px;"></td>
-                  <td>
-                    <?php
-                    $id = $product['id'];
-                    ?>
-                    <a class="icon" href="/product/edit?id=<?= $id ?>" style="color: blue;"><i class="fas fa-edit"></i></a>
-                    <a class="icon" href="/product/delete?id=<?= $id ?>" style="color: red;"><i class="fa-solid fa-trash"></i></a>
-                  </td>
-                </tr>
-              <?php  }
+              if (count($products) > 0) {
+                foreach ($products as $product) { ?>
+                  <tr>
+                    <td><?= htmlspecialchars($product['id']) ?></td>
+                    <td><?= htmlspecialchars($product['name']) ?></td>
+                    <td><?= htmlspecialchars($product['slug']) ?></td>
+                    <td><?= htmlspecialchars($product['description']) ?></td>
+                    <td><?= htmlspecialchars($product['price']) ?></td>
+                    <td><?= htmlspecialchars($product['stock']) ?></td>
+                    <td><?= htmlspecialchars($product['status']) ?></td>
+                    <td><img src="<?= UPLOADS_PATH . $product['image'] ?>" alt="product image" style="height: 50px; width: 50px;"></td>
+                    <td>
+                      <?php
+                      $id = $product['id'];
+                      ?>
+                      <a class="icon" href="/product/edit?id=<?= $id ?>" style="color: blue;"><i class="fas fa-edit"></i></a>
+                      <a class="icon" href="/product/delete?id=<?= $id ?>" style="color: red;"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                  </tr>
+                <?php  }
+              } else { ?>
+                <td>Sorry No Data Found</td>
+              <?php }
               ?>
             </tbody>
           </table>

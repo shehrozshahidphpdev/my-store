@@ -3,9 +3,12 @@
 class User
 {
   public $conn;
-  public function __construct($conn)
+  public $userRepository;
+
+  public function __construct($conn, UserRepository $userRepository)
   {
     $this->conn = $conn;
+    $this->userRepository = $userRepository;
   }
 
   public function register($request)
@@ -16,21 +19,29 @@ class User
     $passwordConfirmaiton = trim(($request['password_confirmation']));
 
     $validated = $this->validateRegisterRequest($name, $email, $password, $passwordConfirmaiton);
-    if (!$validated) {
+
+    $users = $this->userRepository->getAll();
+    foreach ($users as $user) {
+      if ($email == $user['email']) {
+        $_SESSION['errors']['email'] = "The Email Has Already been taken";
+        $emailAlreadyExists = true;
+      }
+    }
+    if (!$validated || $emailAlreadyExists) {
       $_SESSION['old'] = $request;
       header('Location: /register');
       exit();
     }
+    $data = [];
+    $data = [
+      'name' => $name,
+      'email' => $email,
+      'password' => $password
+    ];
 
-    $sql = "INSERT INTO users (name, email, password) VALUES(:name, :email, :password)";
-    $stmt = $this->conn->prepare($sql);
-    $res = $stmt->execute([
-      ':name' => $name,
-      ':email' => $email,
-      ':password' => password_hash($password, PASSWORD_DEFAULT)
-    ]);
+    $result = $this->userRepository->insert($data);
 
-    if ($res) {
+    if ($result) {
       $_SESSION['success'] = "registration successfull";
       header('Location: /login');
     }
@@ -81,13 +92,10 @@ class User
       header('Location: /login');
       exit();
     }
-
-    $sql = "SELECT * FROM users";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute();
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $users = $this->userRepository->getAll();
     foreach ($users as $user) {
       if ($email == $user['email'] && password_verify($password, $user['password'])) {
+        session('success', "Logged in successfully");
         $_SESSION['user'] = $user;
         header('Location: /');
         exit();
@@ -137,4 +145,4 @@ class User
   }
 }
 
-$user = new User($conn);
+$user = new User($conn,  $userrepo);

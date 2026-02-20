@@ -19,10 +19,7 @@ unset($_SESSION['errors']);
 </head>
 
 <body>
-  <?php if (isset($_SESSION['success'])) {
-    include_once COMPONENTS_PATH . 'message.php';
-    unset($_SESSION['success']);
-  } ?>
+  <?php sessionMessage() ?>
   <main class="register">
     <div class="register__container">
       <h1 class="register__title">Login</h1>
