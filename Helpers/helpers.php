@@ -1,9 +1,10 @@
 <?php
 
-function view(string $file)
+function view(string $file, mixed $data = [])
 {
   $filePath = BASE_PATH . '/resources/views/' . $file . '.php';
   if (file_exists($filePath)) {
+    extract($data);
     require_once $filePath;
   } else {
     die('404 File Not Found');
@@ -20,11 +21,15 @@ function asset(string $file)
   }
 }
 
-function isAuthenticated(): bool
+function dd(mixed $data)
 {
-  if (isset($_SESSION['user'])) {
-    return true;
-  } else {
-    return false;
-  }
+  echo "<pre>";
+  print_r($data);
+  die;
+}
+
+
+function session($key, $value)
+{
+  $_SESSION[$key] = $value;
 }

@@ -107,6 +107,12 @@ li {
   color: red;
 }
 
+img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
 .layout {
   display: flex;
   height: 100vh;
@@ -310,4 +316,10 @@ form button {
 }
 form button:hover {
   background: #2563eb;
+}
+form .preview {
+  height: 100px;
+  width: 100px;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
 }/*# sourceMappingURL=app.css.map */

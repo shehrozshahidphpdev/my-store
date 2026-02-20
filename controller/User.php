@@ -126,6 +126,15 @@ class User
       header('Location: /login');
     }
   }
+
+  public static function check(): bool
+  {
+    if (isset($_SESSION['user'])) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 $user = new User($conn);

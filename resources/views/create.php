@@ -55,7 +55,7 @@ unset($_SESSION['errors']);
               </div>
               <div class="form-group">
                 <label for="">Stock</label>
-                <input type="number" name="stock" value="<?= $old['stock'] ?>">
+                <input type="number" name="stock" value="<?= $old['stock'] ?? '' ?>">
                 <p class="error"><?= $errors['stock'] ?? '' ?></p>
               </div>
             </div>

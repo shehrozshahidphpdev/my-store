@@ -20,7 +20,7 @@ $uri = parse_url($uri, PHP_URL_PATH);
 
 switch ($uri) {
   case '/':
-    if (isAuthenticated()) {
+    if (User::check()) {
       view('dashboard');
     } else {
       header('Location: /login');
@@ -29,7 +29,7 @@ switch ($uri) {
 
 
   case '/register':
-    if (!isAuthenticated()) {
+    if (!User::check()) {
       view('register');
     } else {
       header('Location: /');
@@ -37,13 +37,13 @@ switch ($uri) {
     break;
 
   case '/register/store':
-    if (!isAuthenticated()) {
+    if (!User::check()) {
       $user->register($_POST);
     }
     break;
 
   case '/login':
-    if (!isAuthenticated()) {
+    if (!User::check()) {
       view('login');
     } else {
       header('Location: /');
@@ -51,7 +51,7 @@ switch ($uri) {
     break;
 
   case '/login/attempt':
-    if (!isAuthenticated()) {
+    if (!User::check()) {
       $user->login($_POST);
     } else {
       header('Location: /');
@@ -59,7 +59,7 @@ switch ($uri) {
     break;
 
   case '/logout':
-    if (isAuthenticated()) {
+    if (User::check()) {
       $user->logout();
     } else {
       header('Location: /');
@@ -67,15 +67,15 @@ switch ($uri) {
     break;
 
   case '/products':
-    if (isAuthenticated()) {
-      view('list');
+    if (User::check()) {
+      $product->index();
     } else {
       header('Location: /');
     }
     break;
 
   case '/products/create':
-    if (isAuthenticated()) {
+    if (User::check()) {
       view('create');
     } else {
       header('Location: /login');
@@ -83,11 +83,24 @@ switch ($uri) {
     break;
 
   case '/products/store':
-    if (isAuthenticated()) {
+    if (User::check()) {
       $product->store($_POST, $_FILES);
     } else {
       header('Location: /login');
     }
+    break;
+
+  case '/product/delete':
+    $product->destroy($_GET['id']);
+    break;
+
+  case '/product/edit':
+    $product->edit($_GET['id']);
+    break;
+
+
+  case '/product/update':
+    $product->update();
     break;
 
   default:

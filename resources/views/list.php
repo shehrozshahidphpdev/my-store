@@ -9,6 +9,11 @@
 </head>
 
 <body>
+  <?php if (isset($_SESSION['success'])) {
+    include_once COMPONENTS_PATH . 'message.php';
+    unset($_SESSION['success']);
+  } ?>
+
   <div class="layout">
     <?php include_once COMPONENTS_PATH . 'admin/sidebar.php'; ?>
 
@@ -31,22 +36,30 @@
                 <th>Price</th>
                 <th>Stock</th>
                 <th>Image</th>
-                <th>Created At</th>
-                <th>Updated At</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>iphone 17 pro max</td>
-                <td>iphone-17-pro-max</td>
-                <td>Lorem ipsum dolor sit amet</td>
-                <td>1000</td>
-                <td>20</td>
-                <td>image.jpg</td>
-                <td>2026-02-19</td>
-                <td>2026-02-19</td>
-              </tr>
+              <?php
+              foreach ($products as $product) { ?>
+                <tr>
+                  <td><?= $product['id'] ?></td>
+                  <td><?= $product['name'] ?></td>
+                  <td><?= $product['slug'] ?></td>
+                  <td><?= $product['description'] ?></td>
+                  <td><?= $product['price'] ?></td>
+                  <td><?= $product['stock'] ?></td>
+                  <td><img src="<?= UPLOADS_PATH . $product['image'] ?>" alt="product image" style="height: 50px; width: 50px;"></td>
+                  <td>
+                    <?php
+                    $id = $product['id'];
+                    ?>
+                    <a href="/product/edit?id=<?= $id ?>">edit</a>
+                    <a href="/product/delete?id=<?= $id ?>" style="color: red;">delete</a>
+                  </td>
+                </tr>
+              <?php  }
+              ?>
             </tbody>
           </table>
 
