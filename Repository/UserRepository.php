@@ -3,14 +3,11 @@
 
 class UserRepository
 {
-  private $conn;
+  public $conn;
 
-  private $table;
-
-  public function __construct($conn, $table)
+  public function __construct($conn)
   {
     $this->conn = $conn;
-    $this->table = $table;
   }
 
   public function insert($data)
@@ -34,8 +31,6 @@ class UserRepository
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     return $users;
   }
-
-  public function attemptLogin() {}
 }
 
-$userrepo = new UserRepository($conn, 'users');
+$userrepo = new UserRepository($conn);

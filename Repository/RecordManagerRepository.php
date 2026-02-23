@@ -100,6 +100,16 @@ class RecordManagerRepository
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function edit(string $id)
+  {
+    $sql = "SELECT *  FROM products WHERE id = :id";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute([
+      ':id' => $id
+    ]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
   public function update($data)
   {
     $sql = 'UPDATE products SET name = :name, slug = :slug, description = :description, price = :price, stock = :stock, status = :status,  image = :image WHERE id = :id';

@@ -83,7 +83,7 @@ class Product
       'image' => $files['image']['name']
     ];
 
-    $result = $this->product->insert($data);
+    $this->product->insert($data);
     $_SESSION['success'] = "Product Created Successfully";
     header('Location: /products');
     exit();
@@ -118,12 +118,7 @@ class Product
 
   public function edit($id)
   {
-    $sql = "SELECT *  FROM products WHERE id = :id";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute([
-      ':id' => $id
-    ]);
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $data = $this->product->edit($id);
     return view('edit', ['data' => $data]);
   }
 

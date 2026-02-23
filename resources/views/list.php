@@ -68,7 +68,7 @@
                     <td><?= htmlspecialchars($product['id']) ?></td>
                     <td><?= htmlspecialchars($product['name']) ?></td>
                     <td><?= htmlspecialchars($product['slug']) ?></td>
-                    <td><?= htmlspecialchars($product['description']) ?></td>
+                    <td><?= htmlspecialchars(substr($product['description'], 0, 50) . '...') ?></td>
                     <td><?= htmlspecialchars($product['price']) ?></td>
                     <td><?= htmlspecialchars($product['stock']) ?></td>
                     <td><?= htmlspecialchars($product['status']) ?></td>

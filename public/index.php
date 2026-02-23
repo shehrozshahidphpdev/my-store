@@ -7,7 +7,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 
-require_once '../constants.php';
+require_once '../config/constants.php';
 require_once BASE_PATH . '/database/Database.php';
 $conn = $conn->getConnection();
 require_once BASE_PATH . '/Helpers/helpers.php';

@@ -16,7 +16,6 @@ class Database
     $this->db_password = $db_password;
     $this->db_name = $db_name;
   }
-
   public function getConnection()
   {
     try {
